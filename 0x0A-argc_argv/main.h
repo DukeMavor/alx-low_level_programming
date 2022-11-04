@@ -389,4 +389,6 @@ void swap_int(int *a, int *b);
  * Return: returns length
  */
 int _strlen(char *s);
+
+int main (int argc, char *argv[]);
 #endif
