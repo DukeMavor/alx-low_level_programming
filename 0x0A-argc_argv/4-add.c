@@ -1,58 +1,40 @@
-#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#define UNUSED(x) (void)(x)
-/**
- * StringCheck - checks string
- * @s: string to check
- * Return: boolean
- */
-int StringCheck(char *s)
-{
-	int i = 0;
 
-	for (; s[i] != '\0'; i++)
-	{
-		if (!isdigit(s[i]))
-		{
-			return (0);
-		}
-	}
-	return (1);
-}
 /**
- * main - main function
- * @argc: argumentc
- * @argv: vector of arguments
- *Return: always 0
+ * main - Print result of adding given arguments
+ * @argc: Number of arguments
+ * @argv: Arguments recieved
+ *
+ * Return: 0 on success, 1 if theres a nondigit arg
  */
-int main(int argc, char  *argv[])
+int main(int argc, char *argv[])
 {
+	int sum;
+	int count;
 	int i;
-	int result = 0;
 
-	if (argc > 1)
+	count = 1;
+	sum = 0;
+	if (argc == 1)
 	{
-		for (i = 1; i < argc; i++)
+		printf("0\n");
+		return (0);
+	}
+	while (count < argc)
+	{
+		for (i = 0; argv[count][i] != '\0'; i++)
 		{
-			if (StringCheck(argv[i]))
-			{
-				result += atoi(argv[i]);
-			}
-			else
+			if (!(isdigit(argv[count][i])))
 			{
 				printf("Error\n");
 				return (1);
 			}
 		}
-		printf("%d\n", result);
-		return (0);
+		sum += atoi(argv[count]);
+		count++;
 	}
-	else
-	{
-		printf("%d\n", 0);
-		return (1);
-	}
-
+	printf("%d\n", sum);
+	return (0);
 }
