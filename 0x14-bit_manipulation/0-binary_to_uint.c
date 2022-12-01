@@ -1,3 +1,5 @@
+#include "main.h"
+
 /**
  * binary_to_uint - convert string representation of binary number to uint
  * @b: string to convert
