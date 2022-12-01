@@ -1,33 +1,44 @@
 #include "main.h"
-
 /**
- * binary_to_uint - Entry Point
- * @b: const char
- * Return: 0
+ * binary_to_uint - change binary to int
+ * @b: string of binary
+ * Return: unsigned int
  */
 unsigned int binary_to_uint(const char *b)
 {
-	unsigned int res = 0;
-	int base = 1, i = 0;
+	unsigned int long sum;
+	unsigned int long d;
+	unsigned int len;
+	unsigned int i;
+	unsigned int leftmost;
+	unsigned int leftfound = 0;
 
-	if (b == NULL)
+	sum = 0;
+	len = 0;
+	d = 1;
+	i = 0;
+	if (!b || !*b)
 		return (0);
-
-	while (b[i + 1])
+	while (b[len])
 	{
-		if (b[i] != '0' && b[i] != '1')
+		if (b[len] != '1' && b[len] != '0')
 			return (0);
+		if (b[len] == '1' && leftfound == 0)
+		{
+			leftmost = len;
+			leftfound = 1;
+		}
+		len++;
+	}
+
+	len = len - leftmost;
+	d = d << (len - 1);
+	i = leftmost;
+	while (b[i])
+	{
+		sum += (b[i] - '0') * d;
+		d >>= 1;
 		i++;
 	}
-
-	while (i >= 0)
-	{
-		res += ((b[i] - '0') * base);
-		base *= 2;
-		i--;
-	}
-
-
-	return (res);
-
+	return (sum);
 }
