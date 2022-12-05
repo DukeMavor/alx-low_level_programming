@@ -1,59 +1,55 @@
-#define _POSIX_C_SOURCE 200809L
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#define READ_NBYTES 1204
-
+#include "main.h"
 /**
- * main - copy content of one file into another
- * @argc: count of arguments to program
- * @argv: array of arguments to program
- *
- * Return: EXIT_SUCCESS on success, exit with error number, otherwise.
+ * main - program to copy
+ * @ac: argument count
+ * @av: array of arguments
+ * Return: a value
  */
-int main(int argc, char *argv[])
+int main(int ac, char **av)
 {
-	char *file_from, *file_to;
-	char buf[READ_NBYTES];
-	ssize_t r;
-	int fdr, fdw, c = 0;
+	int fdFrum, fdToo, wrote, readed;
+	char buff[1024];
 
-	if (argc != 3)
+	if (ac != 3)
 	{
 		dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
 		exit(97);
 	}
-	file_from = argv[1];
-	file_to = argv[2];
-	fdr = open(file_from, O_RDONLY);
-	if (fdr == -1)
+	fdFrum = open(av[1], O_RDONLY);
+	if (fdFrum == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n",
-			file_from);
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
 		exit(98);
 	}
-	fdw = open(file_to, O_CREAT | O_TRUNC | O_WRONLY, 00664);
-	if (fdw == -1)
+	fdToo = open(av[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
+	if (fdToo == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file_to);
+		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", av[2]);
 		exit(99);
 	}
-	while ((r = read(fdr, buf, READ_NBYTES)))
-		write(fdw, buf, r);
-	if (close(fdw))
+	while ((readed = read(fdFrum, buff, 1024)) > 0)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fdw);
-		c = 1;
+		wrote = write(fdToo, buff, readed);
+		if (wrote == -1)
+		{
+			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", av[2]);
+			exit(99);
+		}
 	}
-	if (close(fdr))
+	if (readed == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fdr);
-		c = 1;
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", av[1]);
+		exit(98);
 	}
-	if (c)
+	if (close(fdFrum) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d", fdFrum);
 		exit(100);
-	exit(EXIT_SUCCESS);
+	}
+	if (close(fdToo) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d", fdToo);
+		exit(100);
+	}
+	return (0);
 }
