@@ -1,44 +1,31 @@
 #!/usr/bin/python3
-"""
-This module defines a function that computes the perimeter of an island
-in a rectangular grid.
-"""
+"""Module that calculates the perimeter of an island in a grid."""
+
+
+def num_water_neighbors(grid, i, j):
+    """Returns the number of water neighbors a cell has in a grid."""
+
+    num = 0
+
+    if i <= 0 or not grid[i - 1][j]:
+        num += 1
+    if j <= 0 or not grid[i][j - 1]:
+        num += 1
+    if j >= len(grid[i]) - 1 or not grid[i][j + 1]:
+        num += 1
+    if i >= len(grid) - 1 or not grid[i + 1][j]:
+        num += 1
+
+    return num
+
 
 def island_perimeter(grid):
-    """
-    Computes the perimeter of the island described in `grid`.
+    """Returns the perimeter of the island in grid."""
 
-    Args:
-        grid (list of list of int): A rectangular grid of 0s and 1s, where
-            0 represents water and 1 represents land.
-
-    Returns:
-        The perimeter of the island, or 0 if the grid is empty or has no land.
-
-    Example:
-        >>> grid = [
-        ...     [0, 0, 0, 0, 0, 0],
-        ...     [0, 1, 0, 0, 0, 0],
-        ...     [0, 1, 0, 0, 0, 0],
-        ...     [0, 1, 1, 1, 0, 0],
-        ...     [0, 0, 0, 0, 0, 0]
-        ... ]
-        >>> island_perimeter(grid)
-        12
-    """
-    if not grid or not grid[0]:
-        return 0
-
-    rows, cols = len(grid), len(grid[0])
     perimeter = 0
-
-    for i in range(rows):
-        for j in range(cols):
-            if grid[i][j] == 1:
-                perimeter += 4
-                if i > 0 and grid[i-1][j] == 1:
-                    perimeter -= 2
-                if j > 0 and grid[i][j-1] == 1:
-                    perimeter -= 2
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            if grid[i][j]:
+                perimeter += num_water_neighbors(grid, i, j)
 
     return perimeter
